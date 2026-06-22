@@ -68,7 +68,6 @@ def buscar_livro():
     if resultados:
         print(f"\n Livros encontrados com o termo '{buscar}':")
         for livro in resultados:
-            # Exibe o ID na tela
             print(f"-  ID: {livro[0]} | Nome: {livro[1].title()} | Autor: {livro[2].title()} | Status: {livro[3]}")
     else:
         print(f"\n Nenhum livro encontrado com o nome '{buscar}'")  
@@ -90,7 +89,6 @@ def emprestar_livro():
     elif resultado[0] == "Emprestado":
         print(f"\n O livro '{resultado[1].title()}' já está emprestado no momento.")
     else:
-        # Altera o status usando o ID como filtro
         cursor.execute("UPDATE livros SET status = 'Emprestado' WHERE id = ?", (id_livro,))
         conexao.commit()
         print(f"\n Sucesso! O livro '{resultado[1].title()}' foi emprestado.")
@@ -114,7 +112,7 @@ def devolver_livro():
     elif resultado[0] == "Disponivel":
         print(f"\n O livro '{resultado[1].title()}' já consta como disponível no sistema.")
     else:
-        # Atualiza o status de volta para Disponivel usando o ID
+        # Atualiza o status
         cursor.execute("UPDATE livros SET status = 'Disponivel' WHERE id = ?", (id_livro,))
         conexao.commit()
         print(f"\n Sucesso! O livro '{resultado[1].title()}' foi devolvido.")   
@@ -129,14 +127,13 @@ def remover_livro():
     conexao = sqlite3.connect("Biblioteca.db")
     cursor = conexao.cursor()
 
-    # Verifica se existe pelo ID e pega o nome para o print
+    # Verifica se existe pelo 
     cursor.execute("SELECT nome FROM livros WHERE id = ?", (id_livro,))
     resultado = cursor.fetchone()
 
     if resultado is None:
         print(f"\n ERRO: O ID '{id_livro}' não foi encontrado.")
     else:
-        # Remove fisicamente a linha pelo ID
         cursor.execute("DELETE FROM livros WHERE id = ?", (id_livro,))
         conexao.commit()
         print(f"\n O Livro '{resultado[0].title()}' foi removido do sistema com sucesso!")
@@ -159,7 +156,6 @@ def mostrar_livro_por_status():
     conexao = sqlite3.connect("Biblioteca.db")
     cursor = conexao.cursor()
 
-    # Busca também o ID
     cursor.execute("SELECT id, nome, autor FROM livros WHERE status = ?", (status_busca,))
     resultados = cursor.fetchall()
     conexao.close()
@@ -177,7 +173,7 @@ def historico_biblioteca():
     conexao = sqlite3.connect("Biblioteca.db")
     cursor = conexao.cursor()
 
-    # Busca ID, nome, autor e status de tudo
+    # Busca ID, nome, autor e status
     cursor.execute("SELECT id, nome, autor, status FROM livros")
     todos_livros = cursor.fetchall()
     conexao.close()
